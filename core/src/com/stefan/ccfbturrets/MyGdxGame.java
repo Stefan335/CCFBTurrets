@@ -12,20 +12,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-public class MyGdxGame extends Game implements InputProcessor {
+public class MyGdxGame extends ApplicationAdapter {
     SpriteBatch batch;
     Array<Sprite> turOne;
-
     Sprite arspTop1[] = new Sprite[100], arspTop2[] = new Sprite[100], arspTop3[] = new Sprite[100], arspTop4[] = new Sprite[100];
-    int a = 0, b = 0, c = 0, d = 0, nNum = 1;
-    //int arnTop1x[] = new int[10],  arnTop2x[] = new int[10],arnTop3x[] = new int[10], arnTop4x[] = new int[10];
-    //int arnTop1y[] = new int[10],  arnTop2y[] = new int[10],arnTop3y[] = new int[10], arnTop4y[] = new int[10];
+    Sprite spTopSel[] = new Sprite[100];
+    int a = 0, b = 0, c = 0, d = 0, nNum = 1, i = 0;
     private Vector3 vtouchPos;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        turOne = new Array<Sprite>();
+        //turOne = new Array<Sprite>();
         /*while(a<100) {
 			turOne.add(new Turrets(new Sprite(new Texture("can_top.jpg"))));
 			arspTop1[a] = new Turrets(new Sprite(new Texture("can_top.jpg")));
@@ -51,8 +49,7 @@ public class MyGdxGame extends Game implements InputProcessor {
 		b=0;
 		c=0;
 		d=0;*/
-        int i = 0;
-        while (i < 100) {
+        while (i < 100) { //a much shorter version of the original code above thanks to Don Vo
             arspTop1[i] = new Turrets(new Sprite(new Texture("can_top.jpg")));
             arspTop1[i].setSize(50, 50);
             arspTop2[i] =new Turrets(new Sprite(new Texture("can_topblack.png")));
@@ -61,82 +58,44 @@ public class MyGdxGame extends Game implements InputProcessor {
             arspTop3[i].setSize(50, 50);
             arspTop4[i] = new Turrets(new Sprite(new Texture("can_topred.png")));
             arspTop4[i].setSize(50, 50);
+            i++;
         }
+        spTopSel[0]= new Sprite(new Texture("can_top.jpg"));
+        spTopSel[0].setSize(1, 1);
+        spTopSel[0].setPosition(Gdx.graphics.getWidth() - 100,
+                Gdx.graphics.getHeight() - 100);
         vtouchPos = new Vector3();
-        Gdx.input.setInputProcessor(this);
+        i = 0;
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {//once again a shorter code than before
             vtouchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             if (nNum == 1) {
-                turOne.indexOf(turOne.get(a), true);
-                arspTop1[a].setPosition(vtouchPos.x - arspTop1[a].getHeight() / 2, vtouchPos.y - arspTop1[a].getWidth() / 2);
-                arspTop1[a].draw(batch);
+                spTopSel[i]=arspTop1[a];
                 a++;
                 nNum++;
             } else if (nNum == 2) {
-                arspTop2[b].setPosition(vtouchPos.x - arspTop2[b].getHeight() / 2, vtouchPos.y - arspTop2[b].getWidth() / 2);
-                arspTop2[b].draw(batch);
+                spTopSel[i]=arspTop2[b];
                 b++;
                 nNum++;
             } else if (nNum == 3) {
-                arspTop3[c].setPosition(vtouchPos.x - arspTop3[c].getHeight() / 2, vtouchPos.y - arspTop3[c].getWidth() / 2);
-                arspTop3[c].draw(batch);
+                spTopSel[i]=arspTop3[c];
                 c++;
                 nNum++;
             } else if (nNum == 4) {
-                arspTop4[d].setPosition(vtouchPos.x - arspTop4[d].getHeight() / 2, vtouchPos.y - arspTop4[d].getWidth() / 2);
-                arspTop4[d].draw(batch);
+                spTopSel[i]=arspTop4[d];
                 d++;
                 nNum = 1;
             }
+            spTopSel[i].setPosition(vtouchPos.x - arspTop4[d].getHeight() / 2, vtouchPos.y - arspTop4[d].getWidth() / 2);
+            //i++;//the code stops working once this line is in it but works (incorrectly) when it is removed
         }
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        spTopSel[i].draw(batch);
         batch.end();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }
